@@ -1,6 +1,7 @@
 """Loan Application Service: stores loan applications and scores their default risk."""
 from contextlib import asynccontextmanager
 
+import os
 import joblib
 import pandas as pd
 from fastapi import FastAPI, HTTPException
@@ -9,11 +10,11 @@ from schemas import Application, ApplicationCreate, LoanFeatures, Prediction
 
 ml = {}            # filled at start-up: {"model": ..., "version": ..., "features": [...]}
 APPLICATIONS = {}  # in-memory store; resets when the server restarts
-
+MODEL_PATH = os.getenv("MODEL_PATH", "model.joblib")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    ml.update(joblib.load("model.joblib"))  # load the model once, when the server starts
+    ml.update(joblib.load(MODEL_PATH))  # load the model once, when the server starts
     yield
     ml.clear()
 
