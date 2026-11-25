@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.4, pytest-9.1.1, pluggy-1.7.0 -- /Users/hakly/Downloads/loan-api/.venv/bin/python3.12
+cachedir: .pytest_cache
+rootdir: /Users/hakly/Downloads/loan-api
+plugins: anyio-4.16.0
+collecting ... collected 5 items
+
+tests/test_api.py::test_health_reports_model_version PASSED              [ 20%]
+tests/test_api.py::test_prediction_is_a_probability PASSED               [ 40%]
+tests/test_api.py::test_amount_above_limit_is_rejected PASSED            [ 60%]
+tests/test_api.py::test_create_and_read_application PASSED               [ 80%]
+tests/test_api.py::test_missing_application_is_404 PASSED                [100%]
+
+============================== 5 passed in 2.08s ===============================

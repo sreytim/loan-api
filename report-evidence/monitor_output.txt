@@ -1,0 +1,16 @@
+day  1  psi_income=0.034  psi_amount=0.028  psi_late=0.001  mean_predicted_default=0.366  actual_default_rate=0.255
+day  2  psi_income=0.053  psi_amount=0.034  psi_late=0.001  mean_predicted_default=0.355  actual_default_rate=0.235
+day  3  psi_income=0.066  psi_amount=0.025  psi_late=0.003  mean_predicted_default=0.369  actual_default_rate=0.230
+day  4  psi_income=0.069  psi_amount=0.037  psi_late=0.009  mean_predicted_default=0.388  actual_default_rate=0.273
+day  5  psi_income=0.073  psi_amount=0.052  psi_late=0.000  mean_predicted_default=0.403  actual_default_rate=0.300
+day  6  psi_income=0.172  psi_amount=0.085  psi_late=0.002  mean_predicted_default=0.414  actual_default_rate=0.290
+day  7  psi_income=0.132  psi_amount=0.175  psi_late=0.000  mean_predicted_default=0.434  actual_default_rate=0.315
+day  8  psi_income=0.236  psi_amount=0.119  psi_late=0.003  mean_predicted_default=0.436  actual_default_rate=0.307
+day  9  psi_income=0.240  psi_amount=0.164  psi_late=0.000  mean_predicted_default=0.476  actual_default_rate=0.315
+day 10  psi_income=0.326  psi_amount=0.278  psi_late=0.002  mean_predicted_default=0.503  actual_default_rate=0.403
+day 11  psi_income=0.236  psi_amount=0.164  psi_late=0.002  mean_predicted_default=0.439  actual_default_rate=0.320
+day 12  psi_income=0.355  psi_amount=0.280  psi_late=0.000  mean_predicted_default=0.516  actual_default_rate=0.375
+day 13  psi_income=0.513  psi_amount=0.215  psi_late=0.000  mean_predicted_default=0.492  actual_default_rate=0.388
+day 14  psi_income=0.621  psi_amount=0.312  psi_late=0.003  mean_predicted_default=0.498  actual_default_rate=0.367
+🏃 View run daily-drift-check at: http://127.0.0.1:5000/#/experiments/2/runs/daa2bf42099a4966a0b75295bbe64a69
+🧪 View experiment at: http://127.0.0.1:5000/#/experiments/2

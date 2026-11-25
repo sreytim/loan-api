@@ -1,0 +1,24 @@
+Registered model: loan-default
+
+version 1
+  aliases:       ['champion']
+  description:   Balanced logistic regression (C=1.0), highest recall
+  source run:    logreg-C=1.0-class_weight=balanced
+  source run id: 76e6f2eefd8747f38fe8537c44aed2d2
+  source:        models:/m-ed49f7360d874dbd89211ff149237c78
+  status:        READY
+  metrics:       recall=0.865 precision=0.611 auc=0.923
+  run URL:       http://127.0.0.1:5000/#/experiments/1/runs/76e6f2eefd8747f38fe8537c44aed2d2
+
+version 2
+  aliases:       ['challenger']
+  description:   Balanced random forest (max_depth=8), highest AUC and higher precision
+  source run:    forest-max_depth=8-class_weight=balanced
+  source run id: 86603acf1d614e07a178867544670f53
+  source:        models:/m-bfe199f48461453f9cc3dad44eb7a69a
+  status:        READY
+  metrics:       recall=0.788 precision=0.742 auc=0.925
+  run URL:       http://127.0.0.1:5000/#/experiments/1/runs/86603acf1d614e07a178867544670f53
+
+alias @champion -> version 1
+alias @challenger -> version 2

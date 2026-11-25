@@ -1,0 +1,25 @@
+ALERT PLAN: loan-default@champion (from MLflow run daily-drift-check, daa2bf42099a4966a0b75295bbe64a69)
+Run URL: http://127.0.0.1:5000/#/experiments/2/runs/daa2bf42099a4966a0b75295bbe64a69
+
+Signal                    | Rule                                   | First triggered in the 14-day run            | Action
+--------------------------+----------------------------------------+----------------------------------------------+-----------------------------------------
+Income PSI: WARNING       | psi_monthly_income_usd > 0.1 (one day) | day 6 (PSI 0.172)                            | Note in the daily log, watch next days
+Income PSI: ALERT         | psi_monthly_income_usd > 0.2 on two    | days 8 and 9 (PSI 0.236 and 0.240),          | Page the model owner, review recall on
+                          | consecutive days                       | alert raised on day 9                        | recent labels, consider retraining
+Mean predicted default    | mean_predicted_default > 0.416         | day 7 (0.434); days back under after that: none | Check review-queue capacity and whether
+                          | (day-1 baseline 0.366 + 0.05)         |                                              | approvals policy needs to change
+
+Numbers used:
+  income PSI by day:            0.034 0.053 0.066 0.069 0.073 0.172 0.132 0.236 0.240 0.326 0.236 0.355 0.513 0.621
+  mean predicted default by day: 0.366 0.355 0.369 0.388 0.403 0.414 0.434 0.436 0.476 0.503 0.439 0.516 0.492 0.498
+  actual default rate by day:    0.255 0.235 0.230 0.273 0.300 0.290 0.315 0.307 0.315 0.403 0.320 0.375 0.388 0.367
+  mean predicted default, days 1-3 (income PSI still under 0.1): min 0.355, max 0.369, spread 0.014
+  day-to-day falls in income PSI although income falls every day: day 6->7: -0.040; day 10->11: -0.090
+  first single day above 0.2: day 8 (PSI 0.236, 0.036 above the line)
+  gap predicted minus actual: day 1 +0.111, mean over 14 days +0.123
+
+Justification (read from charts 6a-psi-income.png and 6b-risk.png):
+- Warning at 0.1: for the first five days income PSI stays between 0.034 and 0.073, so 0.1 sits just above the normal band and is first crossed on day 6 (0.172). It is cheap to raise and only asks for attention.
+- Alert at 0.2 on two consecutive days: income falls by the same 8 USD every day, yet the measured PSI does not rise smoothly. It falls from day 6 to day 7 (0.172 to 0.132, -0.040) and from day 10 to day 11 (0.326 to 0.236, -0.090). Those reversals are sampling noise, because each day is only 400 applications split over 10 bins (about 40 per bin). The first day above 0.2 is day 8 at 0.236, only 0.036 above the line, which is smaller than the noise just measured (0.040 to 0.090), so one reading cannot be trusted. Day 9 (0.240) confirms it, and the alert is raised on day 9. The rule costs one day of delay and removes pages caused by a single noisy sample.
+- Mean predicted default above 0.416: the day-1 baseline is 0.366, and while income PSI is still under 0.1 (days 1 to 3) the value moves only between 0.355 and 0.369 (spread 0.014). A margin of 0.05 is about three and a half times that spread, so normal days stay below it; it is first crossed on day 7 (0.434) and never comes back under. The threshold is set relative to the model's own baseline, not to the actual default rate, because the champion was trained with class_weight=balanced and its probabilities sit above the observed rate from day 1 (0.366 predicted against 0.255 actual, gap +0.111).
+- The actual default rate rises too (0.255 on day 1 to 0.367 on day 14), so the drift is real risk and not only a statistical artefact. In production the labels arrive months later, which is why the two input-side signals above are the alerts and the actual rate is only a later confirmation.

@@ -1,0 +1,2 @@
+PSI training vs similar month:       0.011  (below 0.1: stable)
+PSI training vs incomes at mean 300: 0.399  (above 0.2: significant shift)

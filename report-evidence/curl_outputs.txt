@@ -1,0 +1,23 @@
+MLflow scoring server: mlflow models serve -m "models:/loan-default@champion" -p 5001 --env-manager local
+Captured: 2026-11-25 17:29:52 +07
+
+(a) Valid applicant
+$ curl -s -w '\nHTTP %{http_code}' -X POST http://127.0.0.1:5001/invocations -H 'Content-Type: application/json' -d '{"dataframe_records":[{"amount_usd":1500,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}]}'
+{"predictions": [[0.9186274447429416, 0.08137255525705848]]}
+HTTP 200
+
+(b) Misspelled column "late_payment" (signature rejection)
+$ curl -s -w '\nHTTP %{http_code}' -X POST http://127.0.0.1:5001/invocations -H 'Content-Type: application/json' -d '{"dataframe_records":[{"amount_usd":1500,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payment":0}]}'
+{"error_code": "INVALID_PARAMETER_VALUE", "message": "Failed to predict data '   amount_usd  term_months  monthly_income_usd  previous_loans  late_payment\n0        1500           12               350.0               1             0'. \nError: Failed to enforce schema of data '   amount_usd  term_months  monthly_income_usd  previous_loans  late_payment\n0        1500           12               350.0               1             0' with schema '['amount_usd': long (required), 'term_months': long (required), 'monthly_income_usd': double (required), 'previous_loans': long (required), 'late_payments': long (required)]'. Error: Model is missing inputs ['late_payments']. Note that there were extra inputs: ['late_payment'].", "sqlstate": "KAM01", "error_class": "SCHEMA_ENFORCEMENT_FAILED"}
+HTTP 400
+
+(c) Extra check: amount_usd 9000 is above the 5,000 USD business cap but has a valid type, so the signature accepts it
+$ curl -s -w '\nHTTP %{http_code}' -X POST http://127.0.0.1:5001/invocations -H 'Content-Type: application/json' -d '{"dataframe_records":[{"amount_usd":9000,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}]}'
+{"predictions": [[0.0026956833498709143, 0.9973043166501291]]}
+HTTP 200
+
+    The same amount sent to FastAPI is rejected by the Pydantic rule (le=5000):
+$ curl -s -w '\nHTTP %{http_code}' -X POST http://127.0.0.1:8000/api/v1/predictions -H 'Content-Type: application/json' -d '{"amount_usd":9000,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}'
+{"detail":[{"type":"less_than_equal","loc":["body","amount_usd"],"msg":"Input should be less than or equal to 5000","input":9000,"ctx":{"le":5000}}]}
+HTTP 422
+
