@@ -1,0 +1,68 @@
+ROLLBACK DRILL: loan-default, alias @champion
+main.py loads models:/loan-default@champion at start-up, so only the alias moves. No code was edited and no image was rebuilt during this drill.
+
+[2026-11-25 17:31:06 +07] 1. BEFORE
+$ python -c "from mlflow import MlflowClient; c = MlflowClient(); print({a: c.get_model_version_by_alias('loan-default', a).version for a in ('champion', 'challenger')})"
+{'champion': '1', 'challenger': '2'}
+
+
+$ curl -s http://127.0.0.1:8000/health
+{"status":"ok","model_version":"1"}
+
+$ curl -s -X POST http://127.0.0.1:8000/api/v1/predictions -H 'Content-Type: application/json' -d '{"amount_usd":1500,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}'
+{"default_probability":0.081,"risk_band":"low","model_version":"1"}
+
+$ curl -s -X POST http://127.0.0.1:5001/invocations -H 'Content-Type: application/json' -d '{"dataframe_records":[{"amount_usd":1500,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}]}'
+{"predictions": [[0.9186274447429416, 0.08137255525705848]]}
+
+[2026-11-25 17:31:07 +07] 2. PROMOTE: move @champion to version 2
+$ python -c "from mlflow import MlflowClient; MlflowClient().set_registered_model_alias('loan-default', 'champion', '2')"
+
+
+$ (stop, then start again, unchanged commands) uvicorn main:app --port 8000   and   mlflow models serve -m "models:/loan-default@champion" -p 5001 --env-manager local
+both servers restarted and responding
+
+[2026-11-25 17:31:10 +07] 3. AFTER PROMOTION
+$ python -c "from mlflow import MlflowClient; c = MlflowClient(); print({a: c.get_model_version_by_alias('loan-default', a).version for a in ('champion', 'challenger')})"
+{'champion': '2', 'challenger': '2'}
+
+
+$ curl -s http://127.0.0.1:8000/health
+{"status":"ok","model_version":"2"}
+
+$ curl -s -X POST http://127.0.0.1:8000/api/v1/predictions -H 'Content-Type: application/json' -d '{"amount_usd":1500,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}'
+{"default_probability":0.057,"risk_band":"low","model_version":"2"}
+
+$ curl -s -X POST http://127.0.0.1:5001/invocations -H 'Content-Type: application/json' -d '{"dataframe_records":[{"amount_usd":1500,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}]}'
+{"predictions": [[0.9426682146112435, 0.057331785388756426]]}
+
+[2026-11-25 17:31:11 +07] 4. ROLLBACK: move @champion back to version 1
+$ python -c "from mlflow import MlflowClient; MlflowClient().set_registered_model_alias('loan-default', 'champion', '1')"
+
+
+$ (stop, then start again, unchanged commands) uvicorn main:app --port 8000   and   mlflow models serve -m "models:/loan-default@champion" -p 5001 --env-manager local
+both servers restarted and responding
+
+[2026-11-25 17:31:15 +07] 5. AFTER ROLLBACK
+$ python -c "from mlflow import MlflowClient; c = MlflowClient(); print({a: c.get_model_version_by_alias('loan-default', a).version for a in ('champion', 'challenger')})"
+{'champion': '1', 'challenger': '2'}
+
+
+$ curl -s http://127.0.0.1:8000/health
+{"status":"ok","model_version":"1"}
+
+$ curl -s -X POST http://127.0.0.1:8000/api/v1/predictions -H 'Content-Type: application/json' -d '{"amount_usd":1500,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}'
+{"default_probability":0.081,"risk_band":"low","model_version":"1"}
+
+$ curl -s -X POST http://127.0.0.1:5001/invocations -H 'Content-Type: application/json' -d '{"dataframe_records":[{"amount_usd":1500,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}]}'
+{"predictions": [[0.9186274447429416, 0.08137255525705848]]}
+
+[2026-11-25 17:31:16 +07] 6. Git check: tracked files changed during the drill (main.py and tests were edited earlier, in step C; nothing changed between BEFORE and AFTER ROLLBACK)
+$ md5 -q main.py
+7946500e6908cc03bd13e689b26f56b2
+
+
+
+[2026-11-25 17:31:27 +07] 7. Final state after the drill
+final aliases: {'champion': '1', 'challenger': '2'}
+FastAPI (8000) and the scoring server (5001) stopped; MLflow tracking server (5000) left running.

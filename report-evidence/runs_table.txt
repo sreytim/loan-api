@@ -1,0 +1,18 @@
+Experiment: loan-default (experiment_id=1)  runs found: 6
+
+run name                                     model   parameters                              auc  recall  precision  run_id
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+logreg-C=1.0-class_weight=balanced           logreg  C=1.0, class_weight=balanced          0.923   0.865      0.611  76e6f2eefd8747f38fe8537c44aed2d2
+logreg-C=0.1-class_weight=balanced           logreg  C=0.1, class_weight=balanced          0.923   0.865      0.610  f78f6695340b403581f2472558a3d971
+forest-max_depth=8-class_weight=balanced     forest  class_weight=balanced, max_depth=8    0.925   0.788      0.742  86603acf1d614e07a178867544670f53
+forest-max_depth=12-class_weight=balanced    forest  class_weight=balanced, max_depth=12   0.919   0.761      0.765  67a743aaf7634b74bd64661117eba6ad
+logreg-C=0.1-class_weight=None               logreg  C=0.1, class_weight=None              0.923   0.707      0.813  9413e9a657014b788f098e613e4271a0
+forest-max_depth=4-class_weight=None         forest  class_weight=None, max_depth=4        0.917   0.608      0.877  c4848c58dd854afe8a1d68358a633ecf
+
+Checks per run (status, run artifacts, logged models):
+  logreg-C=1.0-class_weight=balanced           FINISHED  artifacts=['roc_curve.png'] logged_models=['model']
+  logreg-C=0.1-class_weight=balanced           FINISHED  artifacts=['roc_curve.png'] logged_models=['model']
+  forest-max_depth=8-class_weight=balanced     FINISHED  artifacts=['roc_curve.png'] logged_models=['model']
+  forest-max_depth=12-class_weight=balanced    FINISHED  artifacts=['roc_curve.png'] logged_models=['model']
+  logreg-C=0.1-class_weight=None               FINISHED  artifacts=['roc_curve.png'] logged_models=['model']
+  forest-max_depth=4-class_weight=None         FINISHED  artifacts=['roc_curve.png'] logged_models=['model']

@@ -2,19 +2,26 @@
 from contextlib import asynccontextmanager
 
 import os
-import joblib
+
+import mlflow
 import pandas as pd
 from fastapi import FastAPI, HTTPException
+from mlflow import MlflowClient
 
 from schemas import Application, ApplicationCreate, LoanFeatures, Prediction
 
-ml = {}            # filled at start-up: {"model": ..., "version": ..., "features": [...]}
+ml = {}            # filled at start-up: {"model": ..., "version": ...}
 APPLICATIONS = {}  # in-memory store; resets when the server restarts
-MODEL_PATH = os.getenv("MODEL_PATH", "model.joblib")
+FEATURES = ["amount_usd", "term_months", "monthly_income_usd", "previous_loans", "late_payments"]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    ml.update(joblib.load(MODEL_PATH))  # load the model once, when the server starts
+    # Load the model once, when the server starts, from the MLflow registry BY ALIAS.
+    # Moving the alias in the registry and restarting is enough to change (or roll back) the model.
+    name = os.getenv("MODEL_NAME", "loan-default")
+    alias = os.getenv("MODEL_ALIAS", "champion")
+    ml["model"] = mlflow.pyfunc.load_model(f"models:/{name}@{alias}")
+    ml["version"] = str(MlflowClient().get_model_version_by_alias(name, alias).version)
     yield
     ml.clear()
 
@@ -23,8 +30,8 @@ app = FastAPI(title="Loan Application Service", version="1.0.0", lifespan=lifesp
 
 
 def score(features: LoanFeatures) -> Prediction:
-    X = pd.DataFrame([features.model_dump()])[ml["features"]]
-    probability = float(ml["model"].predict_proba(X)[0, 1])
+    X = pd.DataFrame([features.model_dump()])[FEATURES]
+    probability = float(ml["model"].predict(X)[0, 1])  # column 1 = probability of default
     band = "low" if probability < 0.2 else "medium" if probability < 0.5 else "high"
     return Prediction(default_probability=round(probability, 3), risk_band=band, model_version=ml["version"])
 

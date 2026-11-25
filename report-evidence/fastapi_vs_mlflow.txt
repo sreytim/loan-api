@@ -1,0 +1,13 @@
+FastAPI (uvicorn main:app --port 8000, loads models:/loan-default@champion) vs MLflow scoring server (port 5001)
+Captured: 2026-11-25 17:29:52 +07
+
+$ curl -s http://127.0.0.1:8000/health
+{"status":"ok","model_version":"1"}
+
+$ curl -s -X POST http://127.0.0.1:8000/api/v1/predictions -H 'Content-Type: application/json' -d '{"amount_usd":1500,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}'
+{"default_probability":0.081,"risk_band":"low","model_version":"1"}
+
+$ curl -s -X POST http://127.0.0.1:5001/invocations -H 'Content-Type: application/json' -d '{"dataframe_records":[{"amount_usd":1500,"term_months":12,"monthly_income_usd":350.0,"previous_loans":1,"late_payments":0}]}'
+{"predictions": [[0.9186274447429416, 0.08137255525705848]]}
+
+Match: the scoring server returns [P(no default), P(default)] = [0.9186274447429416, 0.08137255525705848]. The SECOND number, 0.08137255525705848, rounded to 3 decimals is 0.081, which equals FastAPI's default_probability 0.081. Both services loaded the same registry version (1) through the alias @champion.
