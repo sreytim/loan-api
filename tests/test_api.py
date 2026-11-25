@@ -1,4 +1,4 @@
-"""Run with: MLFLOW_TRACKING_URI=http://127.0.0.1:5000 pytest -v (needs loan-default@champion in the registry)"""
+"""Run with: pytest -v (uses model.joblib; with MLFLOW_TRACKING_URI set, uses loan-default@champion)"""
 import pytest
 from fastapi.testclient import TestClient
 
@@ -17,7 +17,7 @@ def client():
 def test_health_reports_model_version(client):
     body = client.get("/health").json()
     assert body["status"] == "ok"
-    assert body["model_version"]  # the registry version behind the alias, e.g. "1"
+    assert body["model_version"]  # "1.0.0" from the file, or a registry version such as "1"
 
 
 def test_prediction_is_a_probability(client):

@@ -5,5 +5,6 @@ __pycache__/
 model.joblib
 models/
 mlflow.db
-mlartifacts/.DS_Store
+mlartifacts/
+.DS_Store
 .env

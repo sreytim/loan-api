@@ -7,3 +7,6 @@ __pycache__/
 model.joblib
 models/
 .env
+mlflow.db
+mlartifacts/
+report-evidence/
