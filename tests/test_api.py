@@ -51,3 +51,15 @@ def test_api_routes_need_the_key_when_one_is_set(client, monkeypatch):
 def test_health_stays_open_when_a_key_is_set(client, monkeypatch):
     monkeypatch.setattr("main.API_KEY", "test-key")
     assert client.get("/health").status_code == 200  # Render's health check sends no key
+
+
+RISKY = {"amount_usd": 4800, "term_months": 6, "monthly_income_usd": 250.0, "previous_loans": 0, "late_payments": 3}
+
+
+def test_probability_is_the_chance_of_default_not_of_repayment(client):
+    # Added after the bad release drill: score() once returned 1 - probability and every test still passed.
+    safe = client.post("/api/v1/predictions", json=GOOD).json()
+    risky = client.post("/api/v1/predictions", json=RISKY).json()
+    assert safe["default_probability"] < 0.2 and safe["risk_band"] == "low"
+    assert risky["default_probability"] > 0.8 and risky["risk_band"] == "high"
+    assert risky["default_probability"] > safe["default_probability"]
