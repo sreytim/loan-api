@@ -39,3 +39,15 @@ def test_create_and_read_application(client):
 
 def test_missing_application_is_404(client):
     assert client.get("/api/v1/applications/99999").status_code == 404
+
+
+def test_api_routes_need_the_key_when_one_is_set(client, monkeypatch):
+    monkeypatch.setattr("main.API_KEY", "test-key")
+    assert client.get("/api/v1/applications").status_code == 401                               # no key
+    assert client.get("/api/v1/applications", headers={"X-API-Key": "wrong"}).status_code == 401
+    assert client.get("/api/v1/applications", headers={"X-API-Key": "test-key"}).status_code == 200
+
+
+def test_health_stays_open_when_a_key_is_set(client, monkeypatch):
+    monkeypatch.setattr("main.API_KEY", "test-key")
+    assert client.get("/health").status_code == 200  # Render's health check sends no key
