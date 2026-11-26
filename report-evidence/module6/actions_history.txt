@@ -1,0 +1,9 @@
+#9  push         main                  853cad7  success  2026-11-26T16:33:17Z  Merge pull request #5 from sreytim/fix-score-proba
+#8  pull_request fix-score-probability d354df2  success  2026-11-26T16:31:27Z  Restore the default probability and test its direc
+#7  push         main                  ee63516  success  2026-11-26T16:26:25Z  Merge pull request #4 from sreytim/simplify-score
+#6  pull_request simplify-score        60684b1  success  2026-11-26T16:24:34Z  Tidy the score function
+#5  pull_request drill-raise-limit     cffebf9  failure  2026-11-26T16:24:20Z  Raise the loan limit to 9000
+#4  push         main                  32c324b  success  2026-11-26T16:19:04Z  Merge pull request #2 from sreytim/test-api-key
+#3  pull_request test-api-key          74fa243  success  2026-11-26T16:17:15Z  Test the API key check
+#2  push         main                  168e33c  failure  2026-11-25T17:28:01Z  Merge pull request #1 from sreytim/module-6
+#1  pull_request module-6              78f55cd  success  2026-11-25T17:25:46Z  Module 5 and 6: MLflow lifecycle, API key and depl

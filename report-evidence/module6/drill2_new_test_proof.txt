@@ -1,0 +1,8 @@
+New test: tests/test_api.py::test_probability_is_the_chance_of_default_not_of_repayment
+
+With the bug put back (round(1 - probability, 3)):
+FAILED tests/test_api.py::test_probability_is_the_chance_of_default_not_of_repayment
+1 failed, 7 passed
+
+With the fix (round(probability, 3)):
+8 passed

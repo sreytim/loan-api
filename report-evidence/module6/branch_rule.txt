@@ -1,0 +1,21 @@
+$ curl -s https://api.github.com/repos/sreytim/loan-api/branches/main  (protection part)
+{
+  "protected": true,
+  "protection": {
+    "enabled": true,
+    "required_status_checks": {
+      "enforcement_level": "everyone",
+      "contexts": [
+        "test"
+      ],
+      "checks": [
+        {
+          "context": "test",
+          "app_id": 15368
+        }
+      ]
+    }
+  }
+}
+
+Rule set in Settings -> Branches for 'main': Require a pull request before merging (0 approvals, solo repo); Require status checks to pass: test; Do not allow bypassing the above settings.

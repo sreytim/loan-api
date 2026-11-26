@@ -1,0 +1,11 @@
+API key checks (Lesson 6.6), run 2026-11-27 against https://loan-api-sreytim.onrender.com
+API_KEY is set only as a Render environment variable; the key was typed hidden (read -s KEY) and is in no file.
+
+$ curl -s $APP/health                                                   # open: always 200
+{"status":"ok","model_version":"1.0.0","git_sha":"853cad714c490638dc0f03231ac02c23be5bd83b"}
+
+$ curl -s -o /dev/null -w "%{http_code}\n" $APP/api/v1/applications     # no key
+401
+
+$ curl -s -w " (HTTP %{http_code})\n" -H "X-API-Key: $KEY" $APP/api/v1/applications   # with the key
+[] (HTTP 200)

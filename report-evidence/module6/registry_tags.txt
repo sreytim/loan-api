@@ -1,0 +1,14 @@
+ghcr.io/sreytim/loan-api tags (public, anonymous pull):
+{
+    "name": "sreytim/loan-api",
+    "tags": [
+        "168e33c0e7bbd64ce30e2bc165fa3302c8204db5",
+        "latest",
+        "32c324baafab44762d5c57590e3d42a82548afa2",
+        "ee635165892ab6b0c91b39078c9f84120b36ee12",
+        "853cad714c490638dc0f03231ac02c23be5bd83b"
+    ]
+}
+
+live /health:
+{"status":"ok","model_version":"1.0.0","git_sha":"853cad714c490638dc0f03231ac02c23be5bd83b"}
