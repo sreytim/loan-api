@@ -1,0 +1,6 @@
+merged_at 2026-11-26T16:33:15Z merge commit 853cad714c490638dc0f03231ac02c23be5bd83b
+16:33:18Z live git_sha = 32c324baafab44762d5c57590e3d42a82548afa2
+16:36:11Z live git_sha = 853cad714c490638dc0f03231ac02c23be5bd83b
+LIVE at 2026-11-26T16:36:11+00:00  merge-to-live = 176 s
+{"status":"ok","model_version":"1.0.0","git_sha":"853cad714c490638dc0f03231ac02c23be5bd83b"}
+{"default_probability":0.095,"risk_band":"low","model_version":"1.0.0"}

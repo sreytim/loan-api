@@ -1,0 +1,23 @@
+OPENAPI COMPARISON: Module 2 specification vs live https://loan-api-sreytim.onrender.com/openapi.json (saved as openapi_live.json)
+
+Module 2 design                                   Live API                                   Result
+------------------------------------------------  -----------------------------------------  ----------------------------------------
+GET   /applications (status, limit, province,     GET  /api/v1/applications                  Match on resource; changed on purpose:
+      after; returns {items, next_cursor})              (returns a plain list)               /api/v1 prefix added, no filters/paging
+POST  /applications -> 201, 422                   POST /api/v1/applications -> 201, 422      Match (same codes); body now also carries
+      body: borrower_id, amount_usd, term_months                                             the 3 model features, response embeds
+                                                                                             the prediction
+GET   /applications/{application_id} -> 200, 404  GET  /api/v1/applications/{application_id} Match (404 returned by the handler)
+PATCH /applications/{application_id}              (not implemented)                          Left out on purpose: no decision workflow
+      -> 200, 404, 409, 422                                                                  in the course service; status stays pending
+GET   /borrowers/{borrower_id}/applications       (not implemented)                          Left out on purpose: no borrowers store
+POST  /applications/{application_id}/predictions  POST /api/v1/predictions -> 200, 422       Changed on purpose: stateless scoring from
+      -> 201, 404                                                                            features, no stored prediction resource
+(none)                                            GET  /health                               Added on purpose: Render health check and
+                                                                                             pipeline verify read model_version, git_sha
+Auth: bearer token, 401 on every endpoint         X-API-Key header on /api/ routes, 401      Changed on purpose: one shared key held in
+                                                                                             a Render environment variable (Lesson 6.6)
+
+Kept from the design: plural nouns, POST returns 201, 422 for broken business rules (amount_usd 100 to 5000),
+404 for an unknown application, ids starting at 7781, status in {pending, approved, rejected}, "detail" error body.
+Not carried over: submitted_at timestamp, Location header on 201, cursor paging, province filter.

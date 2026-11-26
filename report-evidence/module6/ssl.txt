@@ -1,0 +1,12 @@
+SSL Labs (https://www.ssllabs.com/ssltest/), assessed Thu, 26 Nov 2026 16:38:12 UTC
+216.24.57.16  grade A
+216.24.57.18  grade A
+
+Certificate (openssl s_client):
+issuer=C = US, O = Google Trust Services, CN = WE1
+subject=CN = onrender.com
+notBefore=Nov 19 21:53:13 2026 GMT
+notAfter=Feb 17 22:53:10 2027 GMT
+tls1_1: not offered / not testable here
+tls1_2: supported
+tls1_3: supported

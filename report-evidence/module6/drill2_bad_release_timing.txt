@@ -1,0 +1,7 @@
+merged_at 2026-11-26T16:26:22Z merge commit ee635165892ab6b0c91b39078c9f84120b36ee12
+16:26:29Z live git_sha = 32c324baafab44762d5c57590e3d42a82548afa2
+16:29:12Z live git_sha = ee635165892ab6b0c91b39078c9f84120b36ee12
+LIVE at 2026-11-26T16:29:12+00:00  merge-to-live = 170 s
+
+live prediction for the first applicant from Lesson 5.5 (correct value: 0.095, low):
+{"default_probability":0.905,"risk_band":"low","model_version":"1.0.0"}

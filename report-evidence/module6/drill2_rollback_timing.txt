@@ -1,0 +1,5 @@
+rollback clicked in Render at about 16:29:52Z (timer started ~3 s after the click)
+16:29:52Z live git_sha = ee635165892ab6b0c91b39078c9f84120b36ee12
+16:30:38Z live git_sha = 32c324baafab44762d5c57590e3d42a82548afa2
+RECOVERED at 16:30:38Z  rollback-to-recovered = 46 s
+prediction after rollback: {"default_probability":0.095,"risk_band":"low","model_version":"1.0.0"}
